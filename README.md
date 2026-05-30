@@ -1,6 +1,8 @@
 # Real-Time Grid Monitoring Simulator
 
-This repo contains a full C++/Qt/gRPC project for a power-grid monitoring simulator. It is set up as a three-part system:
+CMakeLists.txt is required for this project. It defines the Qt, gRPC, and Protobuf targets, generates the proto code, and builds the three executables.
+
+This repo is set up as a three-part system:
 
 - `grid_monitor_server`: central gRPC server that receives sensor telemetry and streams it to subscribers
 - `sensor_node_simulator`: gRPC sensor client that generates telemetry and pushes it to the server
@@ -8,15 +10,54 @@ This repo contains a full C++/Qt/gRPC project for a power-grid monitoring simula
 
 The project also includes local `.env` support so database credentials and runtime settings stay out of GitHub.
 
-## Stack
+## What you need to install
 
-- C++20
-- Qt 6 Widgets and Qt SQL
-- gRPC and Protobuf
-- Multi-threaded telemetry processing
-- SQL Server through ODBC
+- Visual Studio Build Tools with the Desktop development with C++ workload
+- CMake
+- Qt 6 x64 for MSVC
+- Protobuf and gRPC, or vcpkg if you want the easiest path on Windows
+- SQL Server ODBC Driver 18
+- SQL Server Developer or Express if you want the database logging path to connect locally
 
-## Layout
+## Recommended setup on Windows
+
+1. Install Visual Studio Build Tools and include the C++ workload.
+2. Install Qt 6 and make sure the MSVC x64 kit matches the compiler you installed.
+3. Install CMake.
+4. Install gRPC and Protobuf. If you use vcpkg, install it once and then add the needed packages from there.
+5. Install the Microsoft ODBC Driver 18 for SQL Server.
+6. Clone this repository.
+7. Copy `.env.example` to `.env` and set your local values.
+8. Configure the project with CMake Tools in VS Code, or run CMake manually with the right Qt and package paths.
+
+If you are using vcpkg, the common package install step looks like this:
+
+```powershell
+vcpkg install grpc protobuf
+```
+
+## Local config
+
+Copy `.env.example` to `.env` and edit the values for your machine.
+
+## How to build and run
+
+If you are using vcpkg, configure with your toolchain file. Example:
+
+```powershell
+cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=C:\src\vcpkg\scripts\buildsystems\vcpkg.cmake
+cmake --build build
+```
+
+If you are using VS Code, pick the MSVC kit in CMake Tools and run `CMake: Configure`, then `CMake: Build`.
+
+Run the targets in this order:
+
+1. `grid_monitor_server`
+2. `sensor_node_simulator`
+3. `grid_monitor_app`
+
+## Project layout
 
 - `proto/` contains the telemetry service contract
 - `src/common/` contains shared telemetry models and `.env` loading
@@ -25,11 +66,3 @@ The project also includes local `.env` support so database credentials and runti
 - `src/client/` contains the Qt dashboard and gRPC subscriber
 - `src/core/` contains the background processing queue
 - `src/db/` contains the SQL Server wrapper
-
-## Local config
-
-Copy `.env.example` to `.env` and edit values as needed. The `.env` file is ignored by Git.
-
-## Build notes
-
-The project is wired for CMake, Qt, gRPC, and Protobuf. The generated proto code is expected in the build tree, so your local environment needs the matching toolchain packages if you want to compile it.

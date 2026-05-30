@@ -17,9 +17,6 @@ set(PROTO_FILE ${CMAKE_CURRENT_SOURCE_DIR}/proto/grid_telemetry.proto)
 set(GENERATED_PROTO_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
 file(MAKE_DIRECTORY ${GENERATED_PROTO_DIR})
 
-find_program(PROTOC_EXECUTABLE protoc REQUIRED)
-find_program(GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin REQUIRED)
-
 set(GENERATED_PROTO_SRCS ${GENERATED_PROTO_DIR}/grid_telemetry.pb.cc)
 set(GENERATED_PROTO_HDRS ${GENERATED_PROTO_DIR}/grid_telemetry.pb.h)
 set(GENERATED_GRPC_SRCS ${GENERATED_PROTO_DIR}/grid_telemetry.grpc.pb.cc)
@@ -27,12 +24,12 @@ set(GENERATED_GRPC_HDRS ${GENERATED_PROTO_DIR}/grid_telemetry.grpc.pb.h)
 
 add_custom_command(
     OUTPUT ${GENERATED_PROTO_SRCS} ${GENERATED_PROTO_HDRS} ${GENERATED_GRPC_SRCS} ${GENERATED_GRPC_HDRS}
-    COMMAND ${PROTOC_EXECUTABLE}
+    COMMAND $<TARGET_FILE:protobuf::protoc>
     ARGS
         --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/proto
         --cpp_out=${GENERATED_PROTO_DIR}
         --grpc_out=${GENERATED_PROTO_DIR}
-        --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN_EXECUTABLE}
+        --plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>
         ${PROTO_FILE}
     DEPENDS ${PROTO_FILE}
     COMMENT "Generating gRPC sources from grid_telemetry.proto"

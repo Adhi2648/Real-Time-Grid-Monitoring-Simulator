@@ -1,14 +1,22 @@
 build/
+generated/
+out/
+cmake-build-*/
+Testing/
+
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
-*.out
+*.ninja
+compile_commands.json
 
 .vscode/
 .idea/
 *.suo
 *.user
+*.userossc
+*.sln.docstates
 
 *_moc.cpp
 ui_*.h
@@ -17,11 +25,12 @@ ui_*.h
 .env
 .env.local
 
-build/
-generated/
-
 *.exe
 *.dll
 *.lib
 *.so
 *.dylib
+*.obj
+*.pdb
+*.ilk
+*.exp

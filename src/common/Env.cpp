@@ -62,13 +62,14 @@ QString value(const QString& key, const QString& defaultValue)
 
 QString connectionStringFromEnv()
 {
+    const QString driver = value(QStringLiteral("SQLSERVER_DRIVER"), QStringLiteral("ODBC Driver 18 for SQL Server"));
     const QString server = value(QStringLiteral("SQLSERVER_HOST"), QStringLiteral("localhost"));
     const QString database = value(QStringLiteral("SQLSERVER_DATABASE"), QStringLiteral("GridDB"));
     const QString username = value(QStringLiteral("SQLSERVER_USERNAME"));
     const QString password = value(QStringLiteral("SQLSERVER_PASSWORD"));
     const QString trustServerCertificate = value(QStringLiteral("SQLSERVER_TRUST_SERVER_CERTIFICATE"), QStringLiteral("yes"));
 
-    QString connectionString = QStringLiteral("Driver={ODBC Driver 18 for SQL Server};Server=%1;Database=%2;").arg(server, database);
+    QString connectionString = QStringLiteral("Driver={%1};Server=%2;Database=%3;").arg(driver, server, database);
 
     if (!username.isEmpty()) {
         connectionString += QStringLiteral("Uid=%1;Pwd=%2;").arg(username, password);
