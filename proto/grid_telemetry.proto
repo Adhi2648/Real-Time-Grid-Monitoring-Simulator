@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package grid;
+
+service GridMonitoring {
+  // this stream keeps the dashboard fed with fresh pmu data
+  rpc StreamTelemetry (stream PMUData) returns (Ack);
+  rpc SubscribeTelemetry (SubscribeRequest) returns (stream PMUData);
+}
+
+message PMUData {
+  int64 timestamp_ms = 1;
+  string node_id = 2;
+  double voltage_magnitude = 3;
+  double voltage_angle = 4;
+  double current_magnitude = 5;
+  double current_angle = 6;
+  double frequency_hz = 7;
+}
+
+message SubscribeRequest {
+  string node_id = 1;
+}
+
+message Ack {
+  bool success = 1;
+  string message = 2;
+}
